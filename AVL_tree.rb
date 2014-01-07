@@ -1,5 +1,3 @@
-require 'debugger'
-
 class AVLNode
 	attr_accessor :value, :left, :right, :parent
 
@@ -11,9 +9,9 @@ class AVLNode
 	end
 
 	def get_depth
-		depth = 1
+		depth = 0
 		curr_node = self
-		until curr_node.left.nil? && curr_node.right.nil?
+		until curr_node.nil?
 			depth += 1
 			curr_node = curr_node.left || curr_node.right
 		end
@@ -69,8 +67,6 @@ class AVLTree
 
 	end
 
-	#balance only accounts for RR or LL cases, not RL or LR cases 
-
 	def recursive_balance(node)
 		return "Done balancing" if node.nil?
 
@@ -92,33 +88,51 @@ class AVLTree
 		recursive_balance(node.parent)
 	end
 
-	def rotate_right(node)
-		original_parent = node.parent
-		original_left = node.left
+	# def rotate_right(node)
+	# 	original_parent = node.parent
+	# 	original_left = node.left
 
-		node.left = original_left.right
-		if original_left.right
-			original_left.right.parent = node
-		end
+	# 	node.left = original_left.right
+	# 	if original_left.right
+	# 		original_left.right.parent = node
+	# 	end
 
-		node.parent = original_left
+	# 	node.parent = original_left
 
-		original_left.parent = original_parent
-		original_left.right = node
+	# 	original_left.parent = original_parent
+	# 	original_left.right = node
 		
-		#re-assigns parent if it is not root
-		unless original_parent.nil?
-			if original_parent.left == node
-				original_parent.left = original_left
-			else
-				original_parent.right = original_left
-			end
-		end
+	# 	#re-assigns parent if it is not root
+	# 	unless original_parent.nil?
+	# 		if original_parent.left == node
+	# 			original_parent.left = original_left
+	# 		else
+	# 			original_parent.right = original_left
+	# 		end
+	# 	end
 
-		#re-assign root if root involved
-		if node == @root
-			@root = original_left
+	# 	#re-assign root if root involved
+	# 	if node == @root
+	# 		@root = original_left
+	# 	end
+	# end
+
+	def rotate_right(node)
+		parent = node.parent
+		child = node.left
+		grandchild = node.left.right
+
+		node.left = grandchild
+		grandchild.parent = node if grandchild
+		node.parent = child
+
+		child.right = node
+		child.parent = parent
+
+		if parent
+			parent.left == node ? parent.left = child : parent.right = child
 		end
+		@root = child if @root == node
 	end
 
 	def rotate_left(node)
@@ -134,17 +148,9 @@ class AVLTree
 		child.parent = parent
 
 		if parent
-			if parent.left == node
-				parent.left = child
-			else
-				parent.right = child
-			end
+			parent.left == node ? parent.left = child : parent.right = child
 		end
-
-		if node == @root
-			@root = child
-		end
-
+		@root = child if @root == node
 	end
 
 	def print_tree
