@@ -122,33 +122,29 @@ class AVLTree
 	end
 
 	def rotate_left(node)
+		parent = node.parent
+		child = node.right
+		grandchild = node.right.left
 
-		# debugger unless node.value == 1
+		node.right = grandchild
+		grandchild.parent = node if grandchild
+		node.parent = child
 
-		original_parent = node.parent
-		original_right = node.right
+		child.left = node
+		child.parent = parent
 
-		node.right = original_right.left
-		if original_right.left 
-			original_right.left.parent = node
-		end
-
-		node.parent = original_right
-
-		original_right.parent = original_parent
-		original_right.left = node
-
-		unless original_parent.nil?
-			if original_parent.left == node
-				original_parent.left = original_right
+		if parent
+			if parent.left == node
+				parent.left = child
 			else
-				original_parent.right = original_right
+				parent.right = child
 			end
 		end
 
 		if node == @root
-			@root = original_right
+			@root = child
 		end
+
 	end
 
 	def print_tree
@@ -156,7 +152,7 @@ class AVLTree
 	end
 
 	def recursive_print(node_array)
-		return "Done printing" if node_array.empty? || node_array.all?{|node| node.nil?}
+		return "Done printing" if node_array.all?{|node| node.nil?}
 		child_nodes = []
 		until node_array.empty?
 			curr_node = node_array.shift
