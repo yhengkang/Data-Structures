@@ -1,3 +1,5 @@
+require 'debugger'
+
 class AVLNode
 	attr_accessor :value, :left, :right, :parent
 
@@ -73,8 +75,18 @@ class AVLTree
 		return "Done balancing" if node.nil?
 
 		if node.get_balance_factor > 1
+			#LR case
+			if node.left.get_balance_factor == -1
+				rotate_left(node.left)
+			end
+
 			rotate_right(node)
 		elsif node.get_balance_factor < -1
+			#RL case
+			if node.right.get_balance_factor == 1
+				rotate_right(node.right)
+			end
+
 			rotate_left(node)
 		end
 		recursive_balance(node.parent)
@@ -82,31 +94,60 @@ class AVLTree
 
 	def rotate_right(node)
 		original_parent = node.parent
-		left_node = node.left
+		original_left = node.left
 
-		left_node.parent = original_parent
-		left_node.right = node
+		node.left = original_left.right
+		if original_left.right
+			original_left.right.parent = node
+		end
 
-		node.left = nil
-		node.parent = left_node
+		node.parent = original_left
 
+		original_left.parent = original_parent
+		original_left.right = node
+		
+		#re-assigns parent if it is not root
+		unless original_parent.nil?
+			if original_parent.left == node
+				original_parent.left = original_left
+			else
+				original_parent.right = original_left
+			end
+		end
+
+		#re-assign root if root involved
 		if node == @root
-			@root = left_node
+			@root = original_left
 		end
 	end
 
 	def rotate_left(node)
-		original_parent = node.parent
-		right_node = node.right
 
-		right_node.parent = original_parent
-		right_node.left = node
-		
-		node.right = nil
-		node.parent = right_node
+		# debugger unless node.value == 1
+
+		original_parent = node.parent
+		original_right = node.right
+
+		node.right = original_right.left
+		if original_right.left 
+			original_right.left.parent = node
+		end
+
+		node.parent = original_right
+
+		original_right.parent = original_parent
+		original_right.left = node
+
+		unless original_parent.nil?
+			if original_parent.left == node
+				original_parent.left = original_right
+			else
+				original_parent.right = original_right
+			end
+		end
 
 		if node == @root
-			@root = right_node
+			@root = original_right
 		end
 	end
 
