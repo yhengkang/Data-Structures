@@ -88,35 +88,6 @@ class AVLTree
 		recursive_balance(node.parent)
 	end
 
-	# def rotate_right(node)
-	# 	original_parent = node.parent
-	# 	original_left = node.left
-
-	# 	node.left = original_left.right
-	# 	if original_left.right
-	# 		original_left.right.parent = node
-	# 	end
-
-	# 	node.parent = original_left
-
-	# 	original_left.parent = original_parent
-	# 	original_left.right = node
-		
-	# 	#re-assigns parent if it is not root
-	# 	unless original_parent.nil?
-	# 		if original_parent.left == node
-	# 			original_parent.left = original_left
-	# 		else
-	# 			original_parent.right = original_left
-	# 		end
-	# 	end
-
-	# 	#re-assign root if root involved
-	# 	if node == @root
-	# 		@root = original_left
-	# 	end
-	# end
-
 	def rotate_right(node)
 		parent = node.parent
 		child = node.left
