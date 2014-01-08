@@ -67,6 +67,44 @@ class AVLTree
 
 	end
 
+	def delete(value)
+		
+		curr_node = @root
+
+		until curr_node.value == value
+			return "Node not found" if node.nil?
+
+			if value > curr_node.value
+				curr_node = curr_node.right
+			else
+				curr_node = curr_node.left
+			end
+		end
+
+		replacement_node = curr_node.left
+		until replacement_node.right.nil?
+			replacement_node = replacement_node.right
+		end
+
+		curr_node.value = replacement_node.value
+
+		subtree = replacement_node.left
+		parent = replacement_node.parent
+
+		if subtree
+			subtree.parent = parent
+		end
+
+		if parent
+			parent.left == replacement_node ? parent.left = subtree : parent.right = subtree
+		end
+
+		replacement_node.left = nil
+		replacement_node.right = nil
+		replacement_node.parent = nil
+
+	end
+
 	def recursive_balance(node)
 		return "Done balancing" if node.nil?
 
