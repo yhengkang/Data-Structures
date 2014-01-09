@@ -32,7 +32,22 @@ class Heap
 				child_position = parent_position
 			end
 		end
-		puts "Done Heaping"
+	end
+
+	def remove
+		@values[0] = @values[@values.length - 1]
+		@values = @values[0..@values.length - 2]
+		heap_down
+	end
+
+	def heap_down
+		if @comparator.call(@values[0], @values[1]) == -1
+			@values[0], @values[1] = @values[1], @values[0]
+			heap_down
+		elsif @comparator.call(@values[0], @values[2]) == -1
+			@values[0], @values[2] = @values[2], @values[0]
+			heap_down
+		end
 	end
 
 	def read
