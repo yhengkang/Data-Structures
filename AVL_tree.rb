@@ -103,6 +103,8 @@ class AVLTree
 		replacement_node.right = nil
 		replacement_node.parent = nil
 
+		recursive_balance(parent)
+
 	end
 
 	def recursive_balance(node)
